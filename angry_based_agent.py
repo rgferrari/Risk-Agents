@@ -8,7 +8,6 @@ class AngryBased(AgentBase):
     """
     def __init__(self, id: int):
         super().__init__(id)
-
     
     def _get_n_enemies_beside(self, country: str) -> int:
         country_enemies_beside = 0
@@ -17,9 +16,29 @@ class AngryBased(AgentBase):
                 country_enemies_beside += self.player_data['countries_data'][neighbour]['n_troops']
         
         return country_enemies_beside
-    
-    def attack(self):
 
+    """
+    Check all countries owned and remember the one with most enemy troops beside
+    """
+    def mobilize(self):
+        if(self.player_data['n_new_troops'] == 0):
+            self._pass_turn()
+        else:
+            chosen_country = None
+            chosen_country_enemies_beside = 0
+
+            for country in self.player_data['countries_owned']:
+                country_enemies_beside = self._get_n_enemies_beside(country)
+                
+                if country_enemies_beside > chosen_country_enemies_beside:
+                    chosen_country_enemies_beside = country_enemies_beside
+                    chosen_country = country
+            
+            action = 'set_new_troops'
+            args = [self.player_data['n_new_troops'], chosen_country]
+            self._call_action(action, args)
+
+    def attack(self):
         # Will attack an enemy until death
         # Check if attacked an enemy last round and if the enemy is still attackable
         if self.call_data['command']['name'] == 'attack':
@@ -77,28 +96,6 @@ class AngryBased(AgentBase):
         
         self._pass_turn()
 
-    """
-    Check all countries owned and remember the one with most enemy troops beside
-    """
-    def mobilize(self):
-        if(self.player_data['n_new_troops'] == 0):
-            self._pass_turn()
-        else:
-            chosen_country = None
-            chosen_country_enemies_beside = 0
-
-            for country in self.player_data['countries_owned']:
-                country_enemies_beside = self._get_n_enemies_beside(country)
-                
-                if country_enemies_beside > chosen_country_enemies_beside:
-                    chosen_country_enemies_beside = country_enemies_beside
-                    chosen_country = country
-            
-            action = 'set_new_troops'
-            args = [self.player_data['n_new_troops'], chosen_country]
-            self._call_action(action, args)
-
-
     def conquer(self):
         from_country = self.call_data['command']['args'][1]
         to_country = self.call_data['command']['args'][2]
@@ -140,7 +137,6 @@ class AngryBased(AgentBase):
                         return 
                                            
         self._pass_turn()
-
 
 if __name__ == "__main__":
     id = AgentBase.read_id(sys.argv)

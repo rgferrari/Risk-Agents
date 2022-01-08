@@ -46,38 +46,16 @@ class Agent():
             if self._file_changed(last_count):
                 break
 
-    # def attack(self):
-    #     for _ in range(10):
-    #         random_country_name = random.choice(self.player_data['countries_owned'])
-
-    #         #print(random_country_name, self.player_data['countries_data'][random_country_name]['owner'])
-
-    #         if self.player_data['countries_data'][random_country_name]['n_troops'] > 1:
-    #             for neighbour_name in self.player_data['countries_data'][random_country_name]['neighbours']:
-    #                 if self.player_data['countries_data'][neighbour_name]['owner'] != self.id:
-    #                     attack_chance = random.randrange(100)
-    #                     if attack_chance < 60:
-    #                         # print(neighbour_name, self.player_data['countries_data'][neighbour_name]['owner'])
-    #                         # print(self.player_data['countries_data'][neighbour_name]['owner'] != self.id)
-    #                         action = 'attack'
-    #                         if self.player_data['countries_data'][random_country_name]['n_troops'] == 2:
-    #                             n_dice = 1
-    #                         elif self.player_data['countries_data'][random_country_name]['n_troops'] == 3:
-    #                             n_dice = 2
-    #                         elif self.player_data['countries_data'][random_country_name]['n_troops'] >= 4:
-    #                             n_dice = 3
-    #                         args = [n_dice, random_country_name, neighbour_name]
-    #                         self._call_action(action, args)
-    #                         return
-    #                     else:
-    #                         continue
-            
-    #         pass_chance = random.randrange(10)
-    #         if pass_chance >= 9:
-    #             self._pass_turn()
-    #             return
-            
-    #     self._pass_turn()
+    def mobilize(self):
+        """
+        Randomly distribute troops among owned countries until player has 0 new troops
+        """
+        if(self.player_data['n_new_troops'] == 0):
+            self._call_action('pass_turn', [])
+        else:
+            action = 'set_new_troops'
+            args = [random.randint(1, self.player_data['n_new_troops']), random.choice(self.player_data['countries_owned'])]
+            self._call_action(action, args)
 
     def attack(self):
 
@@ -105,17 +83,6 @@ class Agent():
                     return
 
         self._pass_turn()             
-
-    def mobilize(self):
-        """
-        Randomly distribute troops among owned countries until player has 0 new troops
-        """
-        if(self.player_data['n_new_troops'] == 0):
-            self._call_action('pass_turn', [])
-        else:
-            action = 'set_new_troops'
-            args = [random.randint(1, self.player_data['n_new_troops']), random.choice(self.player_data['countries_owned'])]
-            self._call_action(action, args)
             
     def conquer(self):
         """
