@@ -3,6 +3,7 @@ import json
 import os
 import random
 import time
+from pathlib import Path
 
 class Agent():
     # This agent is made for basic tests. He makes random actions just to test all the game methods.
@@ -13,8 +14,8 @@ class Agent():
     def __init__(self, id):
         self.id = int(id)
 
-        self.calls_path = '..\Calls\player_' + id + '.json'
-        self.data_path = '..\Logs\player_' + id + '.json'
+        self.calls_path = Path('Calls/player_' + str(id) + '.json')
+        self.data_path = Path('Logs/player_' + str(id) + '.json')
 
         self.last_time = os.path.getmtime(self.data_path)
 
@@ -161,7 +162,7 @@ class Agent():
 
         self.state = 'waiting'
 
-        self._log()
+        # self._log()
 
     def _pass_turn(self):
         self._call_action('pass_turn', [])
@@ -191,22 +192,18 @@ if __name__ == "__main__":
         if agent.state == 'waiting':
             agent.wait_game()
         elif agent.state == 'attacking':
-            time.sleep(0.1)
             agent.attack()
         elif agent.state == 'conquering':
-            time.sleep(0.1)
             agent.conquer()
         elif agent.state == 'fortifying':
-            time.sleep(0.1)
             agent.fortify()
         elif agent.state == 'mobilizing':
-            time.sleep(0.1)
             agent.mobilize()
         elif agent.state == 'winner':
-            print('I am surprised this actualy worked')
+            #print('I am surprised this actualy worked')
             quit()
         elif agent.state == 'loser':
-            print('This was expected')
+            #print('This was expected')
             quit()
         else:
             print('State unknown')

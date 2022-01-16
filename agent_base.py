@@ -1,6 +1,7 @@
 import sys
 import json
 import os
+from pathlib import Path
 
 class AgentBase():
     """
@@ -17,8 +18,8 @@ class AgentBase():
     def __init__(self, id: int):
         self.id = id
 
-        self.calls_path = '..\Calls\player_' + str(id) + '.json'
-        self.data_path = '..\Logs\player_' + str(id) + '.json'
+        self.calls_path = Path('Calls/player_' + str(id) + '.json')
+        self.data_path = Path('Logs/player_' + str(id) + '.json')
 
         # These two are used to check if the player data file was modified
         self.last_time = os.path.getmtime(self.data_path)
@@ -128,7 +129,7 @@ class AgentBase():
 
         self.state = 'waiting'
 
-        self._log()
+        # self._log()
     
     def _pass_turn(self):
         """Ask the _call_action() method to pass the turn """
@@ -176,10 +177,10 @@ class AgentBase():
             elif self.state == 'mobilizing':
                 self.mobilize()
             elif self.state == 'winner':
-                print('I won')
+                # print('I won')
                 quit()
             elif self.state == 'loser':
-                print('I lost')
+                # print('I lost')
                 quit()
             else:
                 print('State unknown')

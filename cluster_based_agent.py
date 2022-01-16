@@ -9,12 +9,17 @@ class ClusterBased(AgentBase):
     """
     def __init__(self, id: int):
         super().__init__(id)
+        self._select_goal_continent()
+
+    # TODO
+    def _select_goal_continent(self):
+        pass
 
     def _get_best_continent_owned(self):
         best_continent = None
         best_continent_value = 0
 
-        # get best player continent
+        # Get best player continent based on bonus troops
         for continent in self.player_data['continents_data'].keys():
             if self.player_data['continents_data'][continent]['owner'] == self.id:
                 if self.player_data['continents_data'][continent]['extra_armies'] > best_continent_value:
@@ -136,8 +141,7 @@ class ClusterBased(AgentBase):
     # TODO
     def _fortify_cluster(self, cluster_root: str):
         pass
-    
-    # Modify the next four methods to implement your AI
+
     def mobilize(self):
         """decides what to do when state is mobilizing"""
         if(self.player_data['n_new_troops'] == 0):
@@ -168,7 +172,53 @@ class ClusterBased(AgentBase):
     # TODO
     def conquer(self):
         """decides what to do when state is conquering"""
-        self._pass_turn()
+        country_conquering = self.call_data['command']['args'][1]
+        country_conquered = self.call_data['command']['args'][2]
+
+        action = 'move_troops'
+
+        # If country conquering has only 1 border move everything to the conquered
+        if country_conquering in self.player_data['border_countries'].keys():
+            if len(self.player_data['border_countries'][country_conquering]) == 1:
+                n_troops = self.player_data['countries_data'][country_conquering]['n_troops'] - 1
+                args = [n_troops, country_conquering, country_conquered]
+                self._call_action(action, args)
+                return
+        # If country conquered has only 1 border dont move any troops
+        elif country_conquering in self.player_data['border_countries'].keys():
+            if len(self.player_data['border_countries'][country_conquering]) == 1:
+                n_troops = 0
+                args = [n_troops, country_conquering, country_conquered]
+                self._call_action(action, args)
+                return
+
+        # Get weakest country conquering border inside goal continent 
+        country_conquering_border = None
+
+        # Get weakest country conquered border inside goal continent
+        country_conquered_border = None
+
+        # If country conquered has no border in continent dont move any troops
+        if country_conquered_border == None:
+            n_troops = 0
+            args = [n_troops, country_conquering, country_conquered]
+            self._call_action(action, args)
+            return  
+        # If country conquering has a border inside the continent
+        # and its armies are less than the country conquered border
+        # dont move any troops      
+        elif country_conquering_border != None:
+            if self.player_data['countries_data'][country_conquering_border]['n_troops'] < self.player_data['countries_data'][country_conquered_border]:
+                n_troops = 0
+                args = [n_troops, country_conquering, country_conquered]
+                self._call_action(action, args)
+                return
+        
+        # Move everything to conquered
+        n_troops = self.player_data['countries_data'][country_conquering]['n_troops'] - 1
+        args = [n_troops, country_conquering, country_conquered]
+        self._call_action(action, args) 
+
 
     def fortify(self):
         best_continent = self._get_best_continent_owned()
