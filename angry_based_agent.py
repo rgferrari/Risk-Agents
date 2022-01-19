@@ -4,7 +4,7 @@ import sys
 
 class AngryBased(AgentBase):
     """
-    This is a model of an Agent class based on sillysoft's Angry agent
+    This is a model of an Agent class based on sillysoft's Angry agent's heuristic
     """
     def __init__(self, id: int):
         super().__init__(id)

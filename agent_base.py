@@ -91,7 +91,12 @@ class AgentBase():
             print('Passed the turn')
 
     def _call_action(self, action: str, args: list):
-        """Write a command to the call file
+        """
+        Write a command to the call file
+
+        After this method the game will process the action called
+
+        Because of that, only call this method when your method has nothing more to do
 
         Parameters
         ----------
@@ -129,7 +134,7 @@ class AgentBase():
 
         self.state = 'waiting'
 
-        # self._log()
+        self._log()
     
     def _pass_turn(self):
         """Ask the _call_action() method to pass the turn """
