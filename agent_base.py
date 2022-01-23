@@ -18,6 +18,8 @@ class AgentBase():
     def __init__(self, id: int):
         self.id = id
 
+        self.log = False
+
         self.calls_path = Path('Calls/player_' + str(id) + '.json')
         self.data_path = Path('Logs/player_' + str(id) + '.json')
 
@@ -134,7 +136,8 @@ class AgentBase():
 
         self.state = 'waiting'
 
-        self._log()
+        if self.log:
+            self._log()
     
     def _pass_turn(self):
         """Ask the _call_action() method to pass the turn """
@@ -154,7 +157,13 @@ class AgentBase():
 
             if self._file_changed(last_count):
                 break
-    
+
+    def win(self):
+        quit()
+
+    def lose(self):
+        quit()
+
     @staticmethod
     def read_id(args):
         if len(args) != 2:
@@ -182,11 +191,9 @@ class AgentBase():
             elif self.state == 'mobilizing':
                 self.mobilize()
             elif self.state == 'winner':
-                # print('I won')
-                quit()
+                self.win()
             elif self.state == 'loser':
-                # print('I lost')
-                quit()
+                self.lose()
             else:
                 print('State unknown')
     

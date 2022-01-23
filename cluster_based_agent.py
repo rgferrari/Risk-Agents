@@ -9,6 +9,7 @@ class ClusterBased(AgentBase):
 
     def __init__(self, id: int):
         super().__init__(id)
+        self.log = False
         # self.goal_continent = self._select_goal_continent()
 
     # what happens if agent starts already with a country?
@@ -366,6 +367,7 @@ class ClusterBased(AgentBase):
         return False    
 
     def _consolidate_attack(self, cluster_root: str) -> bool:
+        # print('consolidate')
         if self.target_enemy_country != None:
             enemys_neighbours = self.player_data['countries_data'][self.target_enemy_country]['neighbours']
 
@@ -486,8 +488,6 @@ class ClusterBased(AgentBase):
         country_borders = border_countries[country]
 
         country_borders_in_continent = []
-
-        print('Continente:', continent)
 
         # Check if the country borders are in the continent
         for country_border in country_borders:
