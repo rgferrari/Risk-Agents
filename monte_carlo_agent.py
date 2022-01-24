@@ -96,17 +96,22 @@ class MonteCarlo(ClusterBased):
 
         return state
 
-    def _create_node(self) -> str:
+    def _create_node(self):
         state = self._create_state()
         id = self._get_node_id(state)
+
+        is_new_node = False
+
         if id not in self.tree:
             self.tree[id] = {}
             self.tree[id]['state'] = state
             self.tree[id]['leafs'] = []
             self.tree[id]['n_visits'] = 0
             self.tree[id]['value'] = 0
+            is_new_node = True
 
-        return id
+
+        return id, is_new_node
 
     def _add_to_subtree(self, id: str):
         if self.call_data['command']['name'] == 'attack':
@@ -220,13 +225,14 @@ class MonteCarlo(ClusterBased):
 
         if self.searching_state == 'exploiting':
             
-            id = self._create_node()
+            id, is_new_node = self._create_node()
 
             # If is a leaf node, create more leafs to explore
             if len(self.tree[id]['leafs']) == 0:
                 self._explore()
                 self._add_to_subtree(id)
-                self.searching_state = 'exploring'
+                if is_new_node:
+                    self.searching_state = 'exploring'
                 return
 
             # If is not a leaf, exploit
@@ -244,8 +250,13 @@ class MonteCarlo(ClusterBased):
             id = self.subtree[i][0]
             if i != 0:
                 parent_id = str(int(id) - 1)
-                self.tree[parent_id]['leafs'].append(self.subtree[i])
+                # Adiciona como filho o id do filho mais a ação que fez para chegar nele
+                if self.subtree[parent_id][1] == 'pass':
+                    self.tree[parent_id]['leafs'].append([id, self.subtree[parent_id][1]])
+                else:
+                    self.tree[parent_id]['leafs'].append([id, self.subtree[parent_id][1], self.subtree[parent_id][2]])
             self.tree[id]['value'] += reward
+            self.tree[id]['n_visits'] += 1
 
     def win(self):
         self._backpropagation(1)
