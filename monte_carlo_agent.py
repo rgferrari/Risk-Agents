@@ -18,15 +18,18 @@ class MonteCarlo(ClusterBased):
         self.searching_state = 'exploiting' # can be exploiting or exploring
 
     def _get_game_tree(self) -> dict:
+        print('vai pegar a arvore')
         if not os.path.isfile(self.tree_path):
             return {}
 
         while True:
             try:
                 with open(self.tree_path) as openfile:
-                   tree = json.load(openfile)
-                   return tree
+                    tree = json.load(openfile)
+                    print('leu a arvore')
+                    return tree
             except:
+                print('ta dando erro')
                 pass
 
     def _update_game_tree_file(self):
