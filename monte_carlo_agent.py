@@ -12,7 +12,7 @@ class MonteCarlo(ClusterBased):
         super().__init__(id)
         self.log = False
         # The tree with all the other games subtrees
-        self.tree_path = Path('Risk-Agents/montecarlo_tree_fixed_p2.json')
+        self.tree_path = Path('Risk-Agents/montecarlo_tree.json')
         self.tree = self._get_game_tree()
         self.subtree = []
         self.searching_state = 'exploiting' # can be exploiting or exploring
