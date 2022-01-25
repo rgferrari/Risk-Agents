@@ -963,3 +963,6 @@ Winner: 2, Winner Troops: 64, Player Sate json Writes: 273, P1 Call json Writes:
 Winner: 1, Winner Troops: 202, Player Sate json Writes: 736, P1 Call json Writes: 475, P2 Call json Writes: 261, Time: 11.33799958229065
 Winner: 2, Winner Troops: 88, Player Sate json Writes: 256, P1 Call json Writes: 51, P2 Call json Writes: 205, Time: 4.229998350143433
 Winner: 2, Winner Troops: 104, Player Sate json Writes: 388, P1 Call json Writes: 111, P2 Call json Writes: 277, Time: 8.343367338180542
+Winner: 1, Winner Troops: 163, Player Sate json Writes: 418, P1 Call json Writes: 304, P2 Call json Writes: 114, Time: 7.5592851638793945
+Winner: 2, Winner Troops: 86, Player Sate json Writes: 310, P1 Call json Writes: 99, P2 Call json Writes: 211, Time: 5.728998899459839
+Winner: 2, Winner Troops: 81, Player Sate json Writes: 326, P1 Call json Writes: 103, P2 Call json Writes: 223, Time: 5.829997301101685

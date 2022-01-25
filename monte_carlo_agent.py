@@ -12,13 +12,12 @@ class MonteCarlo(ClusterBased):
         super().__init__(id)
         self.log = False
         # The tree with all the other games subtrees
-        self.tree_path = Path('Risk-Agents/montecarlo_tree.json')
+        self.tree_path = Path('Risk-Agents/montecarlo_tree_fixed.json')
         self.tree = self._get_game_tree()
         self.subtree = []
         self.searching_state = 'exploiting' # can be exploiting or exploring
 
     def _get_game_tree(self) -> dict:
-        print('vai pegar a arvore')
         if not os.path.isfile(self.tree_path):
             return {}
 
@@ -26,10 +25,9 @@ class MonteCarlo(ClusterBased):
             try:
                 with open(self.tree_path) as openfile:
                     tree = json.load(openfile)
-                    print('leu a arvore')
                     return tree
             except:
-                print('ta dando erro')
+                print('Error on reading tree')
                 pass
 
     def _update_game_tree_file(self):
@@ -192,7 +190,7 @@ class MonteCarlo(ClusterBased):
     def _exploit(self, id: str):
         leafs = self.tree[id]['leafs']
 
-        best_uct = 0
+        best_uct = float('-inf')
         best_leaf = None
 
         # Choose the leaf with best uct value
@@ -216,8 +214,6 @@ class MonteCarlo(ClusterBased):
         When start attacking, attack until the end
 
         Always attack with max dice
-
-        TODO Make it attack only on advantage?
         """
         is_attacking = self._attack_until_end()
         if is_attacking:
@@ -237,24 +233,43 @@ class MonteCarlo(ClusterBased):
 
             # If is not a leaf, exploit
             else:
-                self._exploit(id)
-                self._add_to_subtree(id)
-                return
+                # 5% chance of explore
+                explore_chance = random.randint(1,20)
+                if explore_chance == 1:
+                    self._explore()
+                    self._add_to_subtree(id)
+                else: 
+                    self._exploit(id)
+                    self._add_to_subtree(id)
+                    return
 
         else:
-            self._explore()
+            # Heavy rollout
+            super().attack()
 
     def _backpropagation(self, reward: int):
         subtree_size = len(self.subtree)
         for i in reversed(range(subtree_size)):
             id = self.subtree[i][0]
             if i != 0:
-                parent_id = str(int(id) - 1)
+                parent_id = self.subtree[i - 1][0]
                 # Adiciona como filho o id do filho mais a ação que fez para chegar nele
-                if self.subtree[parent_id][1] == 'pass':
-                    self.tree[parent_id]['leafs'].append([id, self.subtree[parent_id][1]])
+                if self.subtree[i-1][1] == 'pass':
+                    leaf_to_add = set([id, self.subtree[i-1][1]])
+                    already_exists = False
+                    for leaf in self.tree[parent_id]['leafs']:
+                        if leaf_to_add == set(leaf):
+                            already_exists = True
+                    if not already_exists:
+                        self.tree[parent_id]['leafs'].append([id, self.subtree[i-1][1]])
                 else:
-                    self.tree[parent_id]['leafs'].append([id, self.subtree[parent_id][1], self.subtree[parent_id][2]])
+                    leaf_to_add = set([id, self.subtree[i-1][1], self.subtree[i-1][2]])
+                    already_exists = False
+                    for leaf in self.tree[parent_id]['leafs']:
+                        if leaf_to_add == set(leaf):
+                            already_exists = True
+                    if not already_exists:
+                        self.tree[parent_id]['leafs'].append([id, self.subtree[i-1][1], self.subtree[i-1][2]])
             self.tree[id]['value'] += reward
             self.tree[id]['n_visits'] += 1
 

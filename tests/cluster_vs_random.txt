@@ -1,4 +1,3 @@
-
 Winner: 1, Winner Troops: 104, Player Sate json Writes: 316, P1 Call json Writes: 243, P2 Call json Writes: 73, Time: 6.4165403842926025
 Winner: 1, Winner Troops: 97, Player Sate json Writes: 324, P1 Call json Writes: 223, P2 Call json Writes: 101, Time: 6.127001762390137
 Winner: 1, Winner Troops: 81, Player Sate json Writes: 227, P1 Call json Writes: 167, P2 Call json Writes: 60, Time: 4.104998350143433
