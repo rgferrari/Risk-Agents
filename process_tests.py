@@ -39,6 +39,31 @@ def get_average_execution_time(df):
 
     return total / size
 
+def get_average_troops(df):
+    count_1 = 0
+    count_2 = 0
+    total_1 = 0
+    total_2 = 0
+
+    for index, row in df.iterrows():
+        troops = row[1].split()
+        winner = row[0].split()
+
+        troops = int(troops[-1])
+        winner = int(winner[-1])
+
+        if winner == 1:
+            total_1 += int(troops)
+            count_1 += 1
+        else:
+            total_2 += int(troops)
+            count_2 += 1
+
+    average_troops_1 = total_1 / count_1
+    average_troops_2 = total_2 / count_2
+        
+    return average_troops_1, average_troops_2
+
 paths = []
 for x in os.listdir('tests'):
     if x.endswith(".txt"):
@@ -49,9 +74,12 @@ for path in paths:
     file_exchange = get_average_file_exchange(df)
     victory_percentage = get_victory_percentage(df)
     execution_time = get_average_execution_time(df)
+    troops_p1, troops_p2 = get_average_troops(df)
 
-    print('----', path, '----', sep='')
-
-    print('File Exchange:', file_exchange)
+    print(path, '\n')
     print('Victory Percentage:', victory_percentage)
+    print('File Exchange:', file_exchange)
+    print('p1 troops:', troops_p1)
+    print('p2 troops:', troops_p2)
     print('Execution Time:', execution_time)
+    print('---------------------------------------')
