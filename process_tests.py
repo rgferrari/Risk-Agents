@@ -65,9 +65,10 @@ def get_average_troops(df):
     return average_troops_1, average_troops_2
 
 paths = []
-for x in os.listdir('tests'):
-    if x.endswith(".txt"):
-        paths.append('tests/' + x)
+for file in os.listdir('tests'):
+    if file.endswith(".txt"):
+        if 'montecarlo' in file:
+            paths.append('tests/' + file)
 
 for path in paths:
     df = get_data(path)
